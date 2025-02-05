@@ -1,40 +1,33 @@
 local afk_mode = false
-local defense_entities = local defense_entities or {}
 
-commands.add_command("start-afk", "Starts the AFK mode", function() -- Creates a command to start the AFK mode
-    game.auto_save("AFK") -- Saves the game with the name "AFK"
-    game.print("AFK mode started") -- Prints "AFK mode started" in the chat for a feedback
-    afk_mode = true -- Sets the afk_mode variable to true, so we can use it in the script
+commands.add_command("start-afk", "Starts the AFK mode", function() --Adds start-afk command
+    game.auto_save("AFK") --Saves the game with the name _autosave-AFK
+    game.print("AFK mode started") --Writes a message in the console
+    afk_mode = true --Turns on the variable so that it can be used later
 end)
 
-local function update defense_entities()
-    local defense_entities = {} -- Clears the table
-
-    for name, prototypes in pairs(game.entity_prototypes) do
-        if prototype.type == "wall" or prototype.type == "gate" or prototype.type == "land-mine" or prototype.type == "ammo-turret" or prototype.type == "electric-turret" or prototype.type == "fluid-turret" or prototype.type == "artillery-turret" or prototype.type == "construction-robot" or prototype.type == "pipe" or prototype.type == "pipe-to-ground" or prototype.type == "radar" then
-            table.insert(local defense_entities, name)
-        end
-    end
-end
-
-function table_contains(tbl, value) -- Function to check if a table contains a value (used above)
-    for _, v in pairs(tbl) do --AI gave me this :D, idk what is the _ for
-        if v == value then
-            return true
-        end
-    end
-    return false
-end
+commands.add_command("stop-afk", "Stops the AFK mode", function() --Adds stop-afk command
+    game.print("AFK mode stopped") --Writes a message in the console
+    afk_mode = false --Turns off the variable
+    game.autosave_enabled = true --Turns autosave back
+    game.tick_paused = false --Unpauses the game in case it was paused
+end)
 
 script.on_event(defines.events.on_entity_died, function(event)
-    if afk_mode then
-        local entity = event.entity
-        if not table_contains(local defense_entities, entity.name) then
-            game.tick_paused = true
+    if afk_mode and event.entity then --Check if the AFK mode is on and if the "event" has an entity
+        local entity_type = event.entity.prototype.type  --Gets the entity type
+        
+        --List of defensive entities, which are allowed to be destroyed
+        local defensive_entities = {
+            wall = true, gate = true, ["land-mine"] = true, ["ammo-turret"] = true, 
+            ["electric-turret"] = true, ["fluid-turret"] = true, ["artillery-turret"] = true, 
+            ["construction-robot"] = true, pipe = true, ["pipe-to-ground"] = true, radar = true
+        }
+
+        if not defensive_entities[entity_type] then --Check if the destroyed entity is NOT in the defensive list
+            game.print("Game stopped because a non-defensive entity was destroyed")
+            game.tick_paused = true --Pauses the game so that the biters dont destroy the base
+            game.autosave_enabled = false --Turns off autosave, so that the player can load the last save
         end
     end
-end)
-
-script.on_init(function()
-    update defense_entities() -- Frissítjük a védelmi entitásokat
 end)
