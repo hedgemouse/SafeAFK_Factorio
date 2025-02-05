@@ -3,4 +3,4 @@ This is my first mod and first public repository on GitHub soo I don't really kn
 
 The mod creates two / commands, /start-afk and /stop-afk, if you use the /start-afk it will turn on afk mode which saves the game and stops it when an entity is destroyed that is usually not near the perimiter of your base. When you come back use /stop-afk to stop the afk mode.
 
-I commented on everything so that if you want to understand it you can.
+I commented on everything so that if you want to understand the code, you can.
