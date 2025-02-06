@@ -1,9 +1,13 @@
 local afk_mode = false
 
 commands.add_command("start-afk", "Starts the AFK mode", function() --Adds start-afk command
-    game.auto_save("AFK") --Saves the game with the name _autosave-AFK
-    game.print("AFK mode started") --Writes a message in the console
-    afk_mode = true --Turns on the variable so that it can be used later
+    if not afk_mode then --If the AFK mode is off then the following will run, else the one below
+        game.auto_save("AFK") --Saves the game with the name _autosave-AFK
+        game.print("AFK mode started") --Writes a message in the console
+        afk_mode = true --Turns on the variable so that it can be used later
+    else
+        game.print("You need to turn off AFK mode to be able to turn it on") --Writes a message in the console
+    end
 end)
 
 commands.add_command("stop-afk", "Stops the AFK mode", function() --Adds stop-afk command
@@ -14,7 +18,7 @@ commands.add_command("stop-afk", "Stops the AFK mode", function() --Adds stop-af
     game.tick_paused = false --Unpauses the game in case it was paused
    else
     game.print("You need to turn on AFK mode to be able to turn it off") --Writes a message in the console
-end
+   end
 end)
 
 script.on_event(defines.events.on_entity_died, function(event)
