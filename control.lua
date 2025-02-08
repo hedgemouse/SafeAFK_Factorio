@@ -2,8 +2,8 @@ local afk_mode = false
 
 commands.add_command("start-afk", "Starts the AFK mode", function(event) --Adds start-afk command
     if not afk_mode then --If the AFK mode is off then the following will run, else the one below
-        local player = game.players[event.player_index] -- Get the player who issued the command
-        local player_position = player.position -- Store the player's position in a variable
+        player = game.players[event.player_index] -- Get the player who issued the command
+        player_position = player.position -- Store the player's position in a variable
         game.auto_save("AFK") --Saves the game with the name _autosave-AFK
         game.print("AFK mode started") --Writes a message in the console
         afk_mode = true --Turns on the variable so that it can be used later
@@ -17,8 +17,6 @@ end)
 
 commands.add_command("stop-afk", "Stops the AFK mode", function(event) --Adds stop-afk command
    if afk_mode then --If the AFK mode is on then the following will run, else the one below
-    local player = game.players[event.player_index] -- Get the player who issued the command
-    local player_position = player.position -- Store the player's position in a variable
     game.print("AFK mode stopped") --Writes a message in the console
     afk_mode = false --Turns off the variable
     game.autosave_enabled = true --Turns autosave back
@@ -31,8 +29,6 @@ commands.add_command("stop-afk", "Stops the AFK mode", function(event) --Adds st
 end)
 
 script.on_event(defines.events.on_entity_died, function(event)
-    local player = game.players[event.player_index] -- Get the player who issued the command
-    local player_position = player.position -- Store the player's position in a variable
     if afk_mode and event.entity and event.entity.force.name == "player" then --Check if the AFK mode is on, if the "event" has an entity, and if the entity is not in the player faction
         local entity_type = event.entity.prototype.type  --Gets the entity type
         
@@ -48,11 +44,12 @@ script.on_event(defines.events.on_entity_died, function(event)
             game.tick_paused = true --Pauses the game so that the biters dont destroy the base
             game.autosave_enabled = false --Turns off autosave, so that the player can load the last save
             rendering.clear("SafeAFK")
-            rendering.draw_text{text = "Game Paused", scale_with_zoom = true, surface = event.entity.surface, target = player_position.position, color = {r = 1, g = 1, b = 0, a = 1}, scale = (3)} --Draws a text on the screen
+            rendering.draw_text{text = "Game Paused", scale_with_zoom = true, surface = event.entity.surface, target = player_position, color = {r = 1, g = 1, b = 0, a = 1}, scale = (3)} --Draws a text on the screen
         end
     end
 end)
 
 script.on_load(function()
     afk_mode = false
+    rendering.clear("SafeAFK")
 end)
