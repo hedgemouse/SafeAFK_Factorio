@@ -8,9 +8,12 @@ commands.add_command("start-afk", "Starts the AFK mode", function(event) --Adds 
         game.print("AFK mode started") --Writes a message in the console
         afk_mode = true --Turns on the variable so that it can be used later
         game.autosave_enabled = true
+        game.tick_paused = false
         rendering.clear("SafeAFK")
         rendering.draw_text{text = "AFK mode ON", scale_with_zoom = true, surface = player.surface, target = player_position, color = {r = 1, g = 0, b = 0, a = 1}, scale = (3)} --Draws a text on the screen
     else
+        game.tick_paused = false
+        rendering.clear("SafeAFK")
         game.print("AFK mode already turned on") --Writes a message in the console
     end
 end)
@@ -24,7 +27,9 @@ commands.add_command("stop-afk", "Stops the AFK mode", function(event) --Adds st
     rendering.clear("SafeAFK")
     rendering.draw_text{text = "AFK mode OFF", time_to_live = 300, scale_with_zoom = true, surface = player.surface, target = player_position, color = {r = 0, g = 1, b = 0, a = 1}, scale = (3)} --Draws a text on the screen
    else
+    rendering.clear("SafeAFK")
     game.print("AFK mode already turned off") --Writes a message in the console
+    game.tick_paused = false
    end
 end)
 
@@ -47,9 +52,4 @@ script.on_event(defines.events.on_entity_died, function(event)
             rendering.draw_text{text = "Game Paused", scale_with_zoom = true, surface = event.entity.surface, target = player_position, color = {r = 1, g = 1, b = 0, a = 1}, scale = (3)} --Draws a text on the screen
         end
     end
-end)
-
-script.on_load(function()
-    afk_mode = false
-    rendering.clear("SafeAFK")
 end)
