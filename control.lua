@@ -43,7 +43,7 @@ script.on_event(defines.events.on_entity_died, function(event)
 end)
 
 script.on_event(defines.events.on_research_finished, function(event)
-    if event.research.upgrade == true and storage.afk_mode then
+    if event.research.upgrade == true and storage.afk_mode and settings.global["auto-research"].value then
         game.forces["player"].add_research(event.research)
     end
 end)
